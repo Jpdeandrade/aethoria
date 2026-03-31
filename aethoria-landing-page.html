@@ -1,0 +1,2163 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aethoria: Living Universe - Onde Cada Jogo, Escreve a História</title>
+    <meta name="description" content="Um universo de RPG vivo, construído por mesas reais. Jogue qualquer sistema. Seus eventos viram lore oficial.">
+    <meta property="og:title" content="Aethoria: Living Universe">
+    <meta property="og:description" content="Um universo de RPG vivo, construído por mesas reais. Jogue qualquer sistema. Seus eventos viram lore oficial.">
+    <meta property="og:url" content="https://aethoria.online">
+    <meta property="og:type" content="website">
+    <meta name="theme-color" content="#d4af37">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --color-bg-dark: #0a0a0f;
+            --color-bg-deep: #050508;
+            --color-primary: #d4af37;
+            --color-primary-light: #f0d98f;
+            --color-secondary: #8b4513;
+            --color-accent: #4a90e2;
+            --color-text: #e8e8f0;
+            --color-text-dim: #a8a8b8;
+            --color-border: rgba(212, 175, 55, 0.2);
+
+            --font-display: 'Cinzel', serif;
+            --font-body: 'Crimson Text', serif;
+
+            --clip-card: polygon(12px 0%, calc(100% - 12px) 0%, 100% 12px, 100% calc(100% - 12px), calc(100% - 12px) 100%, 12px 100%, 0% calc(100% - 12px), 0% 12px);
+            --clip-btn: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+
+            /* Horizontal padding: expands on small screens, caps content at ~860px on large */
+            --h-pad: clamp(7%, calc(50% - 490px), 20%);
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--color-bg-dark);
+            color: var(--color-text);
+            line-height: 1.7;
+            font-size: 18px;
+            overflow-x: hidden;
+        }
+
+        /* Background: digital parchment — grid meets dark stone */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                linear-gradient(rgba(212, 175, 55, 0.025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(212, 175, 55, 0.025) 1px, transparent 1px),
+                radial-gradient(circle at 20% 30%, rgba(212, 175, 55, 0.07) 0%, transparent 45%),
+                radial-gradient(circle at 80% 70%, rgba(74, 144, 226, 0.05) 0%, transparent 45%),
+                linear-gradient(180deg, var(--color-bg-deep) 0%, var(--color-bg-dark) 100%);
+            background-size: 50px 50px, 50px 50px, 100% 100%, 100% 100%, 100% 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* ==============================
+           HEADER
+        ============================== */
+        header {
+            padding: 1.5rem var(--h-pad);
+            border-bottom: 1px solid var(--color-border);
+            backdrop-filter: blur(12px);
+            background: rgba(5, 5, 8, 0.85);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Diamond logo mark — medieval sigil meets tech indicator */
+        .logo-mark {
+            width: 34px;
+            height: 34px;
+            border: 2px solid var(--color-primary);
+            transform: rotate(45deg);
+            flex-shrink: 0;
+            position: relative;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.3), inset 0 0 10px rgba(212, 175, 55, 0.05);
+        }
+
+        .logo-mark::after {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 7px;
+            height: 7px;
+            background: var(--color-primary);
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.9);
+        }
+
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo {
+            font-family: var(--font-display);
+            font-size: 1.8rem;
+            font-weight: 900;
+            letter-spacing: 0.1em;
+            color: var(--color-primary);
+            text-transform: uppercase;
+            text-shadow: 0 0 25px rgba(212, 175, 55, 0.4);
+            line-height: 1;
+        }
+
+        .tagline {
+            font-style: italic;
+            color: var(--color-text-dim);
+            font-size: 0.75rem;
+            margin-top: 0.2rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+        }
+
+        /* ==============================
+           NAV
+        ============================== */
+        .site-nav {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin-left: auto;
+        }
+
+        .site-nav a {
+            font-family: var(--font-display);
+            font-size: 0.72rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--color-text-dim);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .site-nav a:hover { color: var(--color-primary); }
+
+        .site-nav .nav-cta {
+            color: var(--color-primary);
+            border: 1px solid rgba(212, 175, 55, 0.35);
+            padding: 0.4rem 1.1rem;
+            clip-path: var(--clip-btn);
+        }
+
+        .site-nav .nav-cta:hover {
+            background: rgba(212, 175, 55, 0.1);
+            border-color: var(--color-primary);
+        }
+
+        @media (max-width: 768px) {
+            .site-nav { gap: 1.25rem; }
+            .site-nav a:not(.nav-cta) { display: none; }
+        }
+
+        @media (max-width: 480px) {
+            .site-nav { display: none; }
+        }
+
+        /* ==============================
+           HERO
+        ============================== */
+        .hero {
+            padding: 8rem var(--h-pad) 6rem;
+            text-align: center;
+            position: relative;
+            animation: fadeIn 1s ease-out 0.2s both;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero h1 {
+            font-family: var(--font-display);
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            font-weight: 600;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 60%, #b8860b 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 0.02em;
+            text-transform: uppercase;
+        }
+
+        .hero .subtitle {
+            font-size: clamp(1.1rem, 3vw, 1.6rem);
+            color: var(--color-text-dim);
+            margin-bottom: 3rem;
+            font-style: italic;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-description {
+            max-width: 680px;
+            margin: 0 auto 3rem;
+            font-size: 1.15rem;
+            color: var(--color-text);
+            line-height: 1.9;
+        }
+
+        .cta-group {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeIn 1.2s ease-out 0.6s both;
+        }
+
+        /* ==============================
+           BUTTONS — parallelogram (angular/tech)
+        ============================== */
+        .btn {
+            padding: 0.9rem 2.5rem;
+            font-family: var(--font-display);
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-block;
+            clip-path: var(--clip-btn);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--color-primary) 0%, #b8860b 100%);
+            color: var(--color-bg-dark);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 100%);
+            box-shadow: 0 0 40px rgba(212, 175, 55, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--color-primary);
+            border: 1px solid var(--color-primary);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(212, 175, 55, 0.1);
+            box-shadow: 0 0 25px rgba(212, 175, 55, 0.25);
+            color: var(--color-primary-light);
+        }
+
+        /* ==============================
+           SECTIONS
+        ============================== */
+        section {
+            padding: 6rem var(--h-pad);
+            position: relative;
+        }
+
+        section h2 {
+            font-family: var(--font-display);
+            font-size: clamp(1.8rem, 5vw, 3rem);
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 1rem;
+            color: var(--color-primary);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        /* Blue diamond markers flanking titles — tech meets medieval crest */
+        section h2::before {
+            content: '◆ ';
+            color: var(--color-accent);
+            opacity: 0.65;
+            font-size: 0.55em;
+            vertical-align: middle;
+        }
+
+        section h2::after {
+            content: ' ◆';
+            color: var(--color-accent);
+            opacity: 0.65;
+            font-size: 0.55em;
+            vertical-align: middle;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--color-text-dim);
+            font-size: 1.15rem;
+            margin-bottom: 4rem;
+            font-style: italic;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Decorative line with center ornament */
+        .decorative-line {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            margin: 1.5rem auto 2rem;
+            max-width: 280px;
+        }
+
+        .decorative-line::before,
+        .decorative-line::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+        }
+
+        .decorative-line::before {
+            background: linear-gradient(90deg, transparent, var(--color-primary));
+        }
+
+        .decorative-line::after {
+            background: linear-gradient(90deg, var(--color-primary), transparent);
+        }
+
+        .decorative-line span {
+            color: var(--color-primary);
+            font-size: 0.75rem;
+            opacity: 0.8;
+        }
+
+        /* ==============================
+           CONCEPT CARDS — cut-corner hexagonal shape
+        ============================== */
+        .concept-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .concept-card {
+            padding: 2.5rem;
+            border: 1px solid var(--color-border);
+            background: rgba(212, 175, 55, 0.02);
+            backdrop-filter: blur(5px);
+            transition: all 0.4s ease;
+            position: relative;
+            clip-path: var(--clip-card);
+        }
+
+        /* Gold dot (medieval torch) top-left + Blue dot (tech indicator) bottom-right */
+        .concept-card::before {
+            content: '';
+            position: absolute;
+            top: 15px; left: 15px;
+            width: 5px; height: 5px;
+            background: var(--color-primary);
+            opacity: 0.5;
+            transition: all 0.3s ease;
+        }
+
+        .concept-card::after {
+            content: '';
+            position: absolute;
+            bottom: 15px; right: 15px;
+            width: 5px; height: 5px;
+            background: var(--color-accent);
+            opacity: 0.35;
+            transition: all 0.3s ease;
+        }
+
+        .concept-card:hover {
+            border-color: rgba(212, 175, 55, 0.5);
+            background: rgba(212, 175, 55, 0.05);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 50px rgba(212, 175, 55, 0.12), 0 0 0 1px rgba(74, 144, 226, 0.08);
+        }
+
+        .concept-card:hover::before {
+            opacity: 1;
+            box-shadow: 0 0 8px var(--color-primary);
+        }
+
+        .concept-card:hover::after {
+            opacity: 0.9;
+            box-shadow: 0 0 8px var(--color-accent);
+        }
+
+        /* Roman numeral — Cinzel (medieval) + accent blue (tech) */
+        .card-icon {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            color: var(--color-accent);
+            margin-bottom: 0.75rem;
+            opacity: 0.7;
+            letter-spacing: 0.15em;
+        }
+
+        .concept-card h3 {
+            font-family: var(--font-display);
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--color-primary-light);
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .concept-card p {
+            color: var(--color-text-dim);
+            line-height: 1.8;
+            font-size: 1rem;
+        }
+
+        /* ==============================
+           FOR WHOM
+        ============================== */
+        .for-whom {
+            background: rgba(5, 5, 8, 0.4);
+        }
+
+        .audience-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 2rem;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .audience-card {
+            padding: 2.5rem;
+            border: 1px solid var(--color-border);
+            background: rgba(212, 175, 55, 0.02);
+            clip-path: var(--clip-card);
+            position: relative;
+            transition: all 0.4s ease;
+        }
+
+        .audience-card::before {
+            content: '';
+            position: absolute;
+            top: 15px; left: 15px;
+            width: 5px; height: 5px;
+            background: var(--color-primary);
+            opacity: 0.5;
+            transition: all 0.3s ease;
+        }
+
+        .audience-card::after {
+            content: '';
+            position: absolute;
+            bottom: 15px; right: 15px;
+            width: 5px; height: 5px;
+            background: var(--color-accent);
+            opacity: 0.35;
+            transition: all 0.3s ease;
+        }
+
+        .audience-card:hover {
+            border-color: rgba(212, 175, 55, 0.5);
+            background: rgba(212, 175, 55, 0.04);
+        }
+
+        .audience-card:hover::before { opacity: 1; box-shadow: 0 0 8px var(--color-primary); }
+        .audience-card:hover::after  { opacity: 0.9; box-shadow: 0 0 8px var(--color-accent); }
+
+        .audience-role {
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--color-primary-light);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 1.5rem;
+        }
+
+        .audience-problem {
+            font-style: italic;
+            color: var(--color-text-dim);
+            font-size: 0.95rem;
+            line-height: 1.75;
+            padding: 0.9rem 1.1rem;
+            border-left: 2px solid rgba(212, 175, 55, 0.25);
+            margin-bottom: 1.75rem;
+        }
+
+        .audience-benefits {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .audience-benefits li {
+            color: var(--color-text);
+            font-size: 1rem;
+            line-height: 1.5;
+            padding-left: 1.4rem;
+            position: relative;
+        }
+
+        .audience-benefits li::before {
+            content: '◆';
+            position: absolute;
+            left: 0;
+            color: var(--color-accent);
+            font-size: 0.5rem;
+            top: 0.4rem;
+        }
+
+        /* ==============================
+           UNIVERSE DEMO
+        ============================== */
+        .universe-demo {
+            background: rgba(5, 5, 8, 0.6);
+        }
+
+        .campaign-viz {
+            position: relative;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            margin: 0 auto;
+        }
+
+        .campaign-viz svg {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+
+        #universe-svg   { min-width: 620px; }
+        #universe-svg-v { display: none; min-width: 0; }
+
+        .campaign-path {
+            fill: none;
+            stroke-width: 2.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .path-dnd    { stroke: #d4af37; }
+        .path-coc    { stroke: #4a90e2; }
+        .path-pf     { stroke: #9b6fa5; }
+        .path-canon  { stroke: #f0d98f; stroke-width: 4; }
+
+        .event-dot {
+            cursor: pointer;
+            opacity: 0;
+            transform-box: fill-box;
+            transform-origin: center;
+        }
+
+        .event-dot.visible {
+            animation: dot-pop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        @keyframes dot-pop {
+            0%   { opacity: 0; transform: scale(0); }
+            65%  { opacity: 1; transform: scale(1.4); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        .event-dot:hover { r: 9; cursor: pointer; }
+
+        .dot-dnd,   .m-dot-dnd   { fill: #d4af37; }
+        .dot-coc,   .m-dot-coc   { fill: #4a90e2; }
+        .dot-pf,    .m-dot-pf    { fill: #9b6fa5; }
+        .dot-canon, .m-dot-canon { fill: #f0d98f; }
+
+        .canon-ring {
+            fill: none;
+            stroke: #f0d98f;
+            stroke-width: 1.5;
+            opacity: 0;
+            pointer-events: none;
+            transform-box: fill-box;
+            transform-origin: center;
+        }
+
+        .canon-ring.visible {
+            animation: ring-pulse 2s ease-out infinite;
+        }
+
+        @keyframes ring-pulse {
+            0%   { opacity: 0.7; transform: scale(1); }
+            100% { opacity: 0;   transform: scale(2.8); }
+        }
+
+        .conv-glow {
+            opacity: 0;
+            transition: opacity 0.8s ease;
+        }
+        .conv-glow.visible { opacity: 1; }
+
+        #conv-node {
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        #conv-node.visible { opacity: 1; }
+
+        .campaign-label-svg {
+            font-family: 'Cinzel', serif;
+            font-size: 11px;
+            letter-spacing: 0.06em;
+        }
+
+        .label-dnd   { fill: #d4af37; }
+        .label-coc   { fill: #4a90e2; }
+        .label-pf    { fill: #9b6fa5; }
+        .label-canon { fill: #f0d98f; font-size: 12px; }
+
+        .guide-line {
+            stroke: rgba(212, 175, 55, 0.07);
+            stroke-dasharray: 3 5;
+        }
+
+        .event-group {
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        .event-group.visible { opacity: 1; }
+
+        .event-tick {
+            stroke-width: 1;
+        }
+        .tick-dnd   { stroke: rgba(212, 175, 55, 0.45); }
+        .tick-coc   { stroke: rgba(74, 144, 226, 0.45); }
+        .tick-pf    { stroke: rgba(155, 111, 165, 0.45); }
+        .tick-canon { stroke: rgba(240, 217, 143, 0.5); }
+
+        .event-label {
+            font-family: 'Crimson Text', serif;
+            font-size: 9.5px;
+            text-anchor: middle;
+            pointer-events: none;
+        }
+        .event-label.label-dnd   { fill: #d4af37; }
+        .event-label.label-coc   { fill: #4a90e2; }
+        .event-label.label-pf    { fill: #9b6fa5; }
+        .event-label.label-canon { fill: #f0d98f; font-size: 10px; }
+
+        /* Tooltip */
+        .viz-tooltip {
+            position: absolute;
+            background: rgba(5, 5, 8, 0.96);
+            border: 1px solid rgba(212, 175, 55, 0.35);
+            padding: 0.55rem 0.9rem;
+            font-family: 'Crimson Text', serif;
+            font-size: 0.9rem;
+            color: #e8e8f0;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.15s ease;
+            max-width: 210px;
+            line-height: 1.45;
+            z-index: 20;
+            clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+        }
+
+        .viz-tooltip.visible { opacity: 1; }
+
+        .tooltip-system {
+            font-family: 'Cinzel', serif;
+            font-size: 0.65rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            margin-bottom: 0.25rem;
+            opacity: 0.7;
+        }
+
+        .viz-replay {
+            display: flex;
+            justify-content: center;
+            margin-top: 1.5rem;
+        }
+
+        .btn-replay {
+            background: transparent;
+            border: 1px solid rgba(212, 175, 55, 0.25);
+            color: var(--color-text-dim);
+            font-family: var(--font-display);
+            font-size: 0.72rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            padding: 0.55rem 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            clip-path: var(--clip-btn);
+        }
+
+        .btn-replay:hover {
+            border-color: var(--color-primary);
+            color: var(--color-primary);
+        }
+
+        /* Desktop SVG hover hint */
+        .desktop-svg-hint {
+            text-align: center;
+            font-family: var(--font-body);
+            font-size: 0.85rem;
+            color: var(--color-text-dim);
+            opacity: 0.55;
+            margin-top: 0.75rem;
+            letter-spacing: 0.03em;
+            font-style: italic;
+        }
+
+        @media (max-width: 480px) {
+            .desktop-svg-hint { display: none; }
+        }
+
+        /* Mobile event caption panel */
+        .mobile-hint {
+            display: none;
+        }
+
+        .event-caption {
+            display: none;
+        }
+
+        /* ==============================
+           CENTRAL CONCEPT
+        ============================== */
+        .central-concept {
+            background: linear-gradient(180deg, rgba(74, 144, 226, 0.02) 0%, transparent 100%);
+        }
+
+        .metaphor-block {
+            max-width: 760px;
+            margin: 0 auto 4rem;
+            text-align: center;
+            font-size: 1.2rem;
+            font-style: italic;
+            color: var(--color-text);
+            line-height: 1.9;
+            padding: 2.5rem 3rem;
+            border: 1px solid var(--color-border);
+            background: rgba(212, 175, 55, 0.025);
+            clip-path: var(--clip-card);
+            position: relative;
+        }
+
+        .metaphor-block .quote-mark {
+            display: block;
+            font-family: var(--font-display);
+            font-size: 4rem;
+            color: var(--color-primary);
+            opacity: 0.15;
+            line-height: 0.5;
+            margin-bottom: 1rem;
+        }
+
+        .is-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            max-width: 860px;
+            margin: 0 auto;
+        }
+
+        .is-block-title {
+            font-family: var(--font-display);
+            font-size: 0.85rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .is-block-title.negative { color: var(--color-text-dim); }
+        .is-block-title.positive { color: var(--color-primary); }
+
+        .is-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .is-list li {
+            font-size: 1rem;
+            line-height: 1.5;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .is-list.negative li {
+            color: var(--color-text-dim);
+        }
+
+        .is-list.negative li::before {
+            content: '×';
+            position: absolute;
+            left: 0;
+            color: rgba(255, 90, 90, 0.45);
+            font-size: 1.1rem;
+            line-height: 1.4;
+        }
+
+        .is-list.positive li {
+            color: var(--color-text);
+        }
+
+        .is-list.positive li::before {
+            content: '◆';
+            position: absolute;
+            left: 0;
+            color: var(--color-primary);
+            font-size: 0.5rem;
+            top: 0.45rem;
+        }
+
+        /* ==============================
+           VALUES
+        ============================== */
+        .values {
+            background: linear-gradient(180deg, transparent 0%, rgba(212, 175, 55, 0.02) 50%, transparent 100%);
+        }
+
+        .values-list {
+            max-width: 860px;
+            margin: 0 auto;
+        }
+
+        .value-item {
+            padding: 2.5rem 0 2.5rem 1.75rem;
+            border-bottom: 1px solid var(--color-border);
+            position: relative;
+        }
+
+        /* Gold → blue gradient left border */
+        .value-item::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 2.5rem;
+            width: 2px;
+            height: calc(100% - 5rem);
+            background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-accent) 100%);
+            opacity: 0.5;
+        }
+
+        .value-item:last-child {
+            border-bottom: none;
+        }
+
+        .value-item h3 {
+            font-family: var(--font-display);
+            font-size: 1.55rem;
+            color: var(--color-primary);
+            margin-bottom: 0.75rem;
+            letter-spacing: 0.05em;
+        }
+
+        .value-item p {
+            color: var(--color-text-dim);
+            font-size: 1.05rem;
+            line-height: 1.9;
+        }
+
+        /* ==============================
+           HOW IT WORKS — Timeline
+        ============================== */
+        .how-it-works {
+            background: rgba(5, 5, 8, 0.5);
+        }
+
+        .timeline {
+            max-width: 780px;
+            margin: 0 auto;
+            position: relative;
+            padding-left: 3.5rem;
+        }
+
+        /* Gold → blue gradient vertical line */
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 5px; top: 0; bottom: 0;
+            width: 2px;
+            background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-accent) 70%, transparent 100%);
+        }
+
+        .timeline-item {
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        /* Diamond node — rúnico */
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -3.9rem; top: 0.35rem;
+            width: 14px; height: 14px;
+            background: var(--color-bg-dark);
+            border: 2px solid var(--color-primary);
+            transform: rotate(45deg);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.35);
+            transition: all 0.3s ease;
+        }
+
+        .timeline-item:hover::before {
+            background: var(--color-primary);
+            box-shadow: 0 0 25px rgba(212, 175, 55, 0.7);
+        }
+
+        .timeline-item h3 {
+            font-family: var(--font-display);
+            font-size: 1.25rem;
+            color: var(--color-primary-light);
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.05em;
+        }
+
+        .timeline-item p {
+            color: var(--color-text-dim);
+            line-height: 1.8;
+        }
+
+        /* ==============================
+           SIGNUP FORM
+        ============================== */
+        .signup-section {
+            border-top: 1px solid var(--color-border);
+        }
+
+        .signup-section h2 { margin-bottom: 0.75rem; }
+
+        .signup-section .section-subtitle { margin-bottom: 2.5rem; }
+
+        .signup-form-wrap {
+            max-width: 520px;
+            margin: 0 auto;
+        }
+
+        .form-row {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .form-field {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+
+        .form-field label {
+            font-family: var(--font-display);
+            font-size: 0.7rem;
+            letter-spacing: 0.1em;
+            color: var(--color-text-dim);
+        }
+
+        .form-field input {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            color: var(--color-text);
+            font-family: var(--font-body);
+            font-size: 1rem;
+            padding: 0.75rem 1rem;
+            clip-path: var(--clip-card);
+            outline: none;
+            transition: border-color 0.2s ease, background 0.2s ease;
+            width: 100%;
+        }
+
+        .form-field input::placeholder { color: var(--color-text-dim); opacity: 0.5; }
+
+        .form-field input:focus {
+            border-color: rgba(212, 175, 55, 0.55);
+            background: rgba(212, 175, 55, 0.04);
+        }
+
+        .form-field input.error { border-color: rgba(220, 80, 80, 0.6); }
+
+        .field-error {
+            font-size: 0.78rem;
+            color: #e07070;
+            font-family: var(--font-body);
+            min-height: 1em;
+        }
+
+        .btn-submit {
+            width: 100%;
+            margin-top: 0.5rem;
+            justify-content: center;
+        }
+
+        /* Success state */
+        .signup-success {
+            display: none;
+            text-align: center;
+            padding: 2.5rem 1rem;
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        .signup-success.visible { display: block; }
+
+        .success-mark {
+            font-size: 2rem;
+            color: var(--color-primary);
+            margin-bottom: 1rem;
+        }
+
+        .signup-success h3 {
+            font-family: var(--font-display);
+            font-size: 1.2rem;
+            color: var(--color-primary-light);
+            margin-bottom: 0.75rem;
+        }
+
+        .signup-success p {
+            color: var(--color-text-dim);
+            font-size: 1rem;
+            max-width: 360px;
+            margin: 0 auto;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ==============================
+           CTA SECTION (Build in Public)
+        ============================== */
+        .cta-section {
+            padding: 5rem var(--h-pad);
+            text-align: center;
+            border-top: 1px solid var(--color-border);
+        }
+
+        .cta-section h2 {
+            font-size: clamp(1.8rem, 6vw, 3rem);
+            margin-bottom: 1rem;
+        }
+
+        .cta-section p {
+            max-width: 680px;
+            margin: 0 auto 3rem;
+            font-size: 1.15rem;
+            color: var(--color-text-dim);
+            line-height: 1.8;
+        }
+
+        /* ==============================
+           FOOTER
+        ============================== */
+        footer {
+            padding: 4rem 5% 2rem;
+            border-top: 1px solid var(--color-border);
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+
+        .footer-content p {
+            color: var(--color-text-dim);
+            margin-bottom: 1.5rem;
+            font-style: italic;
+            font-size: 1.1rem;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .social-links a {
+            color: var(--color-primary);
+            text-decoration: none;
+            font-family: var(--font-display);
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            color: var(--color-primary-light);
+            text-shadow: 0 0 12px rgba(212, 175, 55, 0.6);
+        }
+
+        .copyright {
+            color: var(--color-text-dim);
+            font-size: 0.85rem;
+            opacity: 0.55;
+        }
+
+        /* ==============================
+           SCROLL ANIMATION
+        ============================== */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ==============================
+           RESPONSIVE — Tablet (768px)
+        ============================== */
+        @media (max-width: 768px) {
+            header {
+                padding: 1.25rem 7%;
+                gap: 1rem;
+            }
+
+            .logo { font-size: 1.5rem; }
+            .logo-mark { width: 28px; height: 28px; }
+
+            .hero { padding: 5rem 7% 3.5rem; }
+
+            section { padding: 4rem 7%; }
+
+            .section-subtitle { margin-bottom: 2.5rem; }
+
+            .concept-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .audience-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .is-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .metaphor-block {
+                padding: 2rem 1.5rem;
+                font-size: 1.05rem;
+            }
+
+            .timeline { padding-left: 2.5rem; }
+            .timeline-item::before { left: -3rem; }
+
+            .value-item::before { display: none; }
+            .value-item { padding-left: 0; }
+
+            .cta-group {
+                flex-direction: column;
+                align-items: center;
+                gap: 1rem;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 320px;
+                text-align: center;
+            }
+        }
+
+        /* ==============================
+           RESPONSIVE — Small phones (480px)
+        ============================== */
+        @media (max-width: 480px) {
+            body { font-size: 16px; }
+
+            .logo-mark { display: none; }
+
+            .hero { padding: 4rem 7% 3rem; }
+            .hero h1 { font-weight: 500; }
+
+            section { padding: 3rem 7%; }
+
+            .hero-description { font-size: 1rem; }
+
+            .timeline { padding-left: 2rem; }
+            .timeline::before { left: 3px; }
+            .timeline-item::before {
+                left: -2.5rem;
+                width: 10px; height: 10px;
+            }
+
+            /* Remove decorative diamonds on very small screens */
+            section h2::before,
+            section h2::after { display: none; }
+
+            .btn { max-width: 100%; }
+
+            /* Swap to vertical SVG on small phones */
+            #universe-svg   { display: none; }
+            #universe-svg-v { display: block; }
+            .campaign-viz   { overflow-x: visible; }
+
+            /* Hide desktop tooltip, show mobile caption instead */
+            .viz-tooltip { display: none; }
+
+            .mobile-hint {
+                display: block;
+                text-align: center;
+                font-family: var(--font-body);
+                font-size: 0.85rem;
+                color: var(--color-text-dim);
+                margin-top: 0.75rem;
+                opacity: 0.65;
+                letter-spacing: 0.03em;
+                transition: opacity 0.4s ease;
+            }
+            .mobile-hint.hidden { opacity: 0; pointer-events: none; }
+
+            .event-caption {
+                display: block;
+                margin-top: 1rem;
+                padding: 1rem 1.25rem;
+                background: rgba(10, 10, 15, 0.9);
+                border: 1px solid var(--color-border);
+                clip-path: var(--clip-card);
+                min-height: 4rem;
+                opacity: 0;
+                transform: translateY(6px);
+                transition: opacity 0.3s ease, transform 0.3s ease;
+                pointer-events: none;
+            }
+            .event-caption.visible {
+                opacity: 1;
+                transform: translateY(0);
+                pointer-events: auto;
+            }
+            .ec-system {
+                display: block;
+                font-family: var(--font-display);
+                font-size: 0.7rem;
+                letter-spacing: 0.1em;
+                margin-bottom: 0.4rem;
+            }
+            .ec-system.sys-dnd    { color: #d4af37; }
+            .ec-system.sys-coc    { color: #4a90e2; }
+            .ec-system.sys-pf     { color: #9b6fa5; }
+            .ec-system.sys-canon  { color: #f0d98f; }
+            .ec-text {
+                display: block;
+                font-family: var(--font-body);
+                font-size: 0.95rem;
+                line-height: 1.55;
+                color: var(--color-text);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo-mark"></div>
+        <div class="logo-text">
+            <div class="logo">Aethoria</div>
+            <div class="tagline">Living Universe</div>
+        </div>
+        <nav class="site-nav">
+            <a href="#conceito">Conceito</a>
+            <a href="#como-funciona">Como Funciona</a>
+            <a href="#para-quem">Para Quem</a>
+            <a href="#cadastro" class="nav-cta">Entrar na Lista</a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <h1>Where Every<br>Game Writes<br>History</h1>
+            <p class="subtitle">Um universo de fantasia vivo, construído por mesas reais de RPG</p>
+            <p class="hero-description">
+                Jogue D&D, Call of Cthulhu, Pathfinder, qualquer sistema. Suas ações
+                afetam Aethoria permanentemente. Personagens persistem entre campanhas.
+                Eventos viram história oficial. Este é o mundo que sua mesa ajuda a escrever.
+            </p>
+            <div class="cta-group">
+                <a href="#cadastro" class="btn btn-primary">Quero Fazer Parte</a>
+                <a href="#como-funciona" class="btn btn-secondary">Como Funciona</a>
+            </div>
+        </section>
+
+        <section class="central-concept">
+            <h2>O Que É Aethoria</h2>
+            <div class="decorative-line"><span>✦</span></div>
+            <p class="section-subtitle">Entenda o conceito antes de qualquer outra coisa</p>
+
+            <div class="metaphor-block fade-in">
+                <span class="quote-mark">"</span>
+                Imagine um livro de história sendo escrito em tempo real, onde cada capítulo
+                é uma campanha real de RPG e os autores são os jogadores das mesas.
+                A plataforma é a editora: valida e publica os capítulos que se tornam cânone.
+            </div>
+
+            <div class="is-grid fade-in">
+                <div>
+                    <div class="is-block-title negative">Não é</div>
+                    <ul class="is-list negative">
+                        <li>Uma ferramenta de gestão de fichas de personagem</li>
+                        <li>Um VTT com mapas e dados digitais</li>
+                        <li>Uma calculadora de mecânicas de D&D ou qualquer sistema</li>
+                        <li>Um substituto para Roll20, Foundry ou D&D Beyond</li>
+                    </ul>
+                </div>
+                <div>
+                    <div class="is-block-title positive">É</div>
+                    <ul class="is-list positive">
+                        <li>Uma plataforma de universo vivo onde eventos de mesas reais afetam a lore</li>
+                        <li>Um sistema de crônicas compartilhadas entre sistemas diferentes</li>
+                        <li>Uma wiki colaborativa construída por jogo real, não por escrita livre</li>
+                        <li>Um sistema de progressão persistente entre múltiplas campanhas</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="universe-demo">
+            <h2>Três Mesas, Uma História</h2>
+            <div class="decorative-line"><span>✦</span></div>
+            <p class="section-subtitle">Três sistemas, uma crise, uma noite. Passe o mouse nos eventos para ver como as histórias se cruzam.</p>
+
+            <div class="campaign-viz" id="campaign-viz">
+                <div class="viz-tooltip" id="viz-tooltip">
+                    <div class="tooltip-system" id="tooltip-system"></div>
+                    <div id="tooltip-text"></div>
+                </div>
+
+                <svg id="universe-svg" viewBox="0 0 980 300" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <filter id="glow-s" x="-80%" y="-80%" width="260%" height="260%">
+                            <feGaussianBlur stdDeviation="3" result="b"/>
+                            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+                        </filter>
+                        <filter id="glow-canon" x="-100%" y="-100%" width="300%" height="300%">
+                            <feGaussianBlur stdDeviation="5" result="b"/>
+                            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+                        </filter>
+                    </defs>
+
+                    <!-- Guide lines -->
+                    <line x1="145" y1="50" x2="145" y2="250" stroke-width="1" class="guide-line"/>
+                    <line x1="718" y1="40" x2="718" y2="260" stroke-width="1" class="guide-line" style="stroke:rgba(240,217,143,0.12)"/>
+
+                    <!-- Campaign labels -->
+                    <text x="8"   y="75"  class="campaign-label-svg label-dnd">D&amp;D 5e</text>
+                    <text x="8"   y="155" class="campaign-label-svg label-coc">Call of Cthulhu</text>
+                    <text x="8"   y="235" class="campaign-label-svg label-pf">Pathfinder</text>
+                    <text x="730" y="142" class="campaign-label-svg label-canon">Lore Oficial</text>
+
+                    <!-- Convergence glow -->
+                    <circle cx="718" cy="150" r="28" fill="rgba(240,217,143,0.1)" class="conv-glow" id="conv-glow"/>
+
+                    <!-- Campaign paths -->
+                    <path id="path-dnd"   class="campaign-path path-dnd"   d="M 145 70  L 670 70  C 718 70  718 150 718 150" filter="url(#glow-gold)"/>
+                    <path id="path-coc"   class="campaign-path path-coc"   d="M 145 150 L 718 150"/>
+                    <path id="path-pf"    class="campaign-path path-pf"    d="M 145 230 L 670 230 C 718 230 718 150 718 150"/>
+                    <path id="path-canon" class="campaign-path path-canon" d="M 718 150 L 958 150" filter="url(#glow-canon)"/>
+
+                    <!-- Convergence node -->
+                    <circle cx="718" cy="150" r="7" fill="#f0d98f" id="conv-node"/>
+
+                    <!-- Event label groups (tick + text, revealed when orb passes) -->
+                    <!-- D&D labels (above lane) -->
+                    <g class="event-group" id="eg-dnd-0">
+                        <line x1="215" y1="64" x2="215" y2="50" class="event-tick tick-dnd"/>
+                        <text x="215" y="46" class="event-label label-dnd">Ataques na Região</text>
+                    </g>
+                    <g class="event-group" id="eg-dnd-1">
+                        <line x1="340" y1="64" x2="340" y2="50" class="event-tick tick-dnd"/>
+                        <text x="340" y="46" class="event-label label-dnd">Torre Infiltrada</text>
+                    </g>
+                    <g class="event-group" id="eg-dnd-2">
+                        <line x1="465" y1="64" x2="465" y2="50" class="event-tick tick-dnd"/>
+                        <text x="465" y="46" class="event-label label-dnd">O Ritual Começa</text>
+                    </g>
+                    <g class="event-group" id="eg-dnd-3">
+                        <line x1="590" y1="64" x2="590" y2="50" class="event-tick tick-dnd"/>
+                        <text x="590" y="46" class="event-label label-dnd">Entidade Banida ✦</text>
+                    </g>
+
+                    <!-- CoC labels (alternating above/below lane) -->
+                    <g class="event-group" id="eg-coc-0">
+                        <line x1="230" y1="144" x2="230" y2="130" class="event-tick tick-coc"/>
+                        <text x="230" y="126" class="event-label label-coc">Desaparecimentos</text>
+                    </g>
+                    <g class="event-group" id="eg-coc-1">
+                        <line x1="360" y1="156" x2="360" y2="170" class="event-tick tick-coc"/>
+                        <text x="360" y="180" class="event-label label-coc">Culto Mapeado</text>
+                    </g>
+                    <g class="event-group" id="eg-coc-2">
+                        <line x1="485" y1="144" x2="485" y2="130" class="event-tick tick-coc"/>
+                        <text x="485" y="126" class="event-label label-coc">Ritual Esta Noite</text>
+                    </g>
+                    <g class="event-group" id="eg-coc-3">
+                        <line x1="610" y1="156" x2="610" y2="170" class="event-tick tick-coc"/>
+                        <text x="610" y="180" class="event-label label-coc">Rede Exposta ✦</text>
+                    </g>
+
+                    <!-- PF labels (below lane) -->
+                    <g class="event-group" id="eg-pf-0">
+                        <line x1="205" y1="236" x2="205" y2="250" class="event-tick tick-pf"/>
+                        <text x="205" y="260" class="event-label label-pf">Guarda Acionada</text>
+                    </g>
+                    <g class="event-group" id="eg-pf-1">
+                        <line x1="335" y1="236" x2="335" y2="250" class="event-tick tick-pf"/>
+                        <text x="335" y="260" class="event-label label-pf">Civis Evacuados</text>
+                    </g>
+                    <g class="event-group" id="eg-pf-2">
+                        <line x1="460" y1="236" x2="460" y2="250" class="event-tick tick-pf"/>
+                        <text x="460" y="260" class="event-label label-pf">Cerco à Torre</text>
+                    </g>
+                    <g class="event-group" id="eg-pf-3">
+                        <line x1="595" y1="236" x2="595" y2="250" class="event-tick tick-pf"/>
+                        <text x="595" y="260" class="event-label label-pf">Ordem Mantida ✦</text>
+                    </g>
+
+                    <!-- Canon labels (above lane) -->
+                    <g class="event-group" id="eg-canon-0">
+                        <line x1="820" y1="142" x2="820" y2="128" class="event-tick tick-canon"/>
+                        <text x="820" y="124" class="event-label label-canon">Culto Sombrio extinto</text>
+                    </g>
+                    <g class="event-group" id="eg-canon-1">
+                        <line x1="920" y1="142" x2="920" y2="128" class="event-tick tick-canon"/>
+                        <text x="920" y="124" class="event-label label-canon">Pacto das Três Chamas</text>
+                    </g>
+
+                    <!-- D&D events -->
+                    <circle cx="215" cy="70"  r="6" class="event-dot dot-dnd" data-group="eg-dnd-0" data-system="D&amp;D 5e" data-label="Criaturas do Culto Sombrio atacam a região. Guilda contrata os aventureiros."/>
+                    <circle cx="340" cy="70"  r="6" class="event-dot dot-dnd" data-group="eg-dnd-1" data-system="D&amp;D 5e" data-label="Guiados pelos mapas dos Investigadores, aventureiros entram na Torre pelos esgotos."/>
+                    <circle cx="465" cy="70"  r="6" class="event-dot dot-dnd" data-group="eg-dnd-2" data-system="D&amp;D 5e" data-label="Invocação iniciada no subsolo. Aventureiros combatem enquanto o tempo se esgota."/>
+                    <circle cx="590" cy="70"  r="6" class="event-dot dot-dnd" data-group="eg-dnd-3" data-system="D&amp;D 5e" data-label="Entidade sombria banida. Núcleo do Culto destruído. A Torre silencia. ✦"/>
+
+                    <!-- CoC events -->
+                    <circle cx="230" cy="150" r="6" class="event-dot dot-coc" data-group="eg-coc-0" data-system="Call of Cthulhu" data-label="9 pessoas em 2 semanas. Investigadores chegam a Vermithrax rastreando o padrão."/>
+                    <circle cx="360" cy="150" r="6" class="event-dot dot-coc" data-group="eg-coc-1" data-system="Call of Cthulhu" data-label="Culto Sombrio localizado na Torre. Membros infiltrados na cidade identificados."/>
+                    <circle cx="485" cy="150" r="6" class="event-dot dot-coc" data-group="eg-coc-2" data-system="Call of Cthulhu" data-label="Data e hora do ritual obtidas. Intel repassada à Guilda e à Guarda imediatamente."/>
+                    <circle cx="610" cy="150" r="6" class="event-dot dot-coc" data-group="eg-coc-3" data-system="Call of Cthulhu" data-label="Com o Culto destruído, Investigadores entregam provas. Todos os membros presos. ✦"/>
+
+                    <!-- Pathfinder events -->
+                    <circle cx="205" cy="230" r="6" class="event-dot dot-pf"  data-group="eg-pf-0" data-system="Pathfinder 2e" data-label="Capitã Irena mobiliza a Guarda de Vermithrax após surto de magia sombria."/>
+                    <circle cx="335" cy="230" r="6" class="event-dot dot-pf"  data-group="eg-pf-1" data-system="Pathfinder 2e" data-label="Bairros ao redor da Torre evacuados. Perímetro estabelecido para o confronto."/>
+                    <circle cx="460" cy="230" r="6" class="event-dot dot-pf"  data-group="eg-pf-2" data-system="Pathfinder 2e" data-label="Cultistas tentando escapar da Torre são interceptados. Nenhum foge."/>
+                    <circle cx="595" cy="230" r="6" class="event-dot dot-pf"  data-group="eg-pf-3" data-system="Pathfinder 2e" data-label="Cidade protegida durante todo o confronto. Ordem mantida. Zero baixas civis. ✦"/>
+
+                    <!-- Canon events -->
+                    <circle cx="820" cy="150" r="8" class="event-dot dot-canon" data-group="eg-canon-0" data-system="Lore Oficial" data-label="Três mesas. Uma noite. Torre em ruínas. Culto Sombrio erradicado de Vermithrax."/>
+                    <circle cx="920" cy="150" r="8" class="event-dot dot-canon" data-group="eg-canon-1" data-system="Lore Oficial" data-label="Guilda, Investigadores e Guarda firmam o Pacto das Três Chamas. Aethoria nunca mais será a mesma."/>
+                    <circle cx="820" cy="150" r="8" class="canon-ring" id="ring-1"/>
+                    <circle cx="920" cy="150" r="8" class="canon-ring" id="ring-2"/>
+                </svg>
+
+                <!-- MOBILE: vertical layout -->
+                <svg id="universe-svg-v" viewBox="0 0 320 570" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <filter id="m-glow-s" x="-80%" y="-80%" width="260%" height="260%">
+                            <feGaussianBlur stdDeviation="3" result="b"/>
+                            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+                        </filter>
+                        <filter id="m-glow-canon" x="-100%" y="-100%" width="300%" height="300%">
+                            <feGaussianBlur stdDeviation="5" result="b"/>
+                            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+                        </filter>
+                    </defs>
+
+                    <!-- Guide lines -->
+                    <line x1="20" y1="68" x2="300" y2="68" stroke-width="1" class="guide-line"/>
+                    <line x1="20" y1="472" x2="300" y2="472" stroke-width="1" class="guide-line" style="stroke:rgba(240,217,143,0.12)"/>
+
+                    <!-- Campaign labels (top of each lane) -->
+                    <text x="65"  y="30" class="campaign-label-svg label-dnd" style="font-size:9px">D&amp;D 5e</text>
+                    <text x="160" y="30" class="campaign-label-svg label-coc" style="font-size:9px">Cthulhu</text>
+                    <text x="255" y="30" class="campaign-label-svg label-pf"  style="font-size:9px">Pathfinder</text>
+                    <text x="160" y="560" class="campaign-label-svg label-canon" style="font-size:9px">Lore Oficial</text>
+
+                    <!-- Convergence glow -->
+                    <circle cx="160" cy="472" r="28" fill="rgba(240,217,143,0.1)" class="conv-glow" id="m-conv-glow"/>
+
+                    <!-- Campaign paths -->
+                    <path id="m-path-dnd"   class="campaign-path path-dnd"   d="M 65 72 L 65 385 C 65 472 160 472 160 472"/>
+                    <path id="m-path-coc"   class="campaign-path path-coc"   d="M 160 72 L 160 472"/>
+                    <path id="m-path-pf"    class="campaign-path path-pf"    d="M 255 72 L 255 385 C 255 472 160 472 160 472"/>
+                    <path id="m-path-canon" class="campaign-path path-canon" d="M 160 472 L 160 548" filter="url(#m-glow-canon)"/>
+
+                    <!-- Convergence node -->
+                    <circle cx="160" cy="472" r="7" fill="#f0d98f" id="m-conv-node"/>
+
+                    <!-- Mobile event label groups -->
+                    <!-- D&D labels (left of lane) -->
+                    <g class="event-group" id="meg-dnd-0">
+                        <line x1="59" y1="130" x2="48" y2="130" class="event-tick tick-dnd"/>
+                        <text x="44" y="134" class="event-label label-dnd" style="text-anchor:end">Ataques</text>
+                    </g>
+                    <g class="event-group" id="meg-dnd-1">
+                        <line x1="59" y1="200" x2="48" y2="200" class="event-tick tick-dnd"/>
+                        <text x="44" y="204" class="event-label label-dnd" style="text-anchor:end">Infiltram</text>
+                    </g>
+                    <g class="event-group" id="meg-dnd-2">
+                        <line x1="59" y1="270" x2="48" y2="270" class="event-tick tick-dnd"/>
+                        <text x="44" y="274" class="event-label label-dnd" style="text-anchor:end">Ritual!</text>
+                    </g>
+                    <g class="event-group" id="meg-dnd-3">
+                        <line x1="59" y1="340" x2="48" y2="340" class="event-tick tick-dnd"/>
+                        <text x="44" y="344" class="event-label label-dnd" style="text-anchor:end">Banida ✦</text>
+                    </g>
+
+                    <!-- CoC labels (alternating left/right) -->
+                    <g class="event-group" id="meg-coc-0">
+                        <line x1="152" y1="138" x2="141" y2="138" class="event-tick tick-coc"/>
+                        <text x="137" y="142" class="event-label label-coc" style="text-anchor:end">Sumiços</text>
+                    </g>
+                    <g class="event-group" id="meg-coc-1">
+                        <line x1="168" y1="208" x2="179" y2="208" class="event-tick tick-coc"/>
+                        <text x="183" y="212" class="event-label label-coc" style="text-anchor:start">Culto</text>
+                    </g>
+                    <g class="event-group" id="meg-coc-2">
+                        <line x1="152" y1="278" x2="141" y2="278" class="event-tick tick-coc"/>
+                        <text x="137" y="282" class="event-label label-coc" style="text-anchor:end">Esta noite!</text>
+                    </g>
+                    <g class="event-group" id="meg-coc-3">
+                        <line x1="168" y1="348" x2="179" y2="348" class="event-tick tick-coc"/>
+                        <text x="183" y="352" class="event-label label-coc" style="text-anchor:start">Exposta ✦</text>
+                    </g>
+
+                    <!-- PF labels (right of lane) -->
+                    <g class="event-group" id="meg-pf-0">
+                        <line x1="261" y1="130" x2="272" y2="130" class="event-tick tick-pf"/>
+                        <text x="276" y="134" class="event-label label-pf" style="text-anchor:start">Guarda!</text>
+                    </g>
+                    <g class="event-group" id="meg-pf-1">
+                        <line x1="261" y1="200" x2="272" y2="200" class="event-tick tick-pf"/>
+                        <text x="276" y="204" class="event-label label-pf" style="text-anchor:start">Civis</text>
+                    </g>
+                    <g class="event-group" id="meg-pf-2">
+                        <line x1="261" y1="270" x2="272" y2="270" class="event-tick tick-pf"/>
+                        <text x="276" y="274" class="event-label label-pf" style="text-anchor:start">Cerco</text>
+                    </g>
+                    <g class="event-group" id="meg-pf-3">
+                        <line x1="261" y1="340" x2="272" y2="340" class="event-tick tick-pf"/>
+                        <text x="276" y="344" class="event-label label-pf" style="text-anchor:start">Ordem ✦</text>
+                    </g>
+
+                    <!-- Canon labels (right of path) -->
+                    <g class="event-group" id="meg-canon-0">
+                        <line x1="168" y1="500" x2="179" y2="500" class="event-tick tick-canon"/>
+                        <text x="183" y="504" class="event-label label-canon" style="text-anchor:start">Culto extinto</text>
+                    </g>
+                    <g class="event-group" id="meg-canon-1">
+                        <line x1="168" y1="534" x2="179" y2="534" class="event-tick tick-canon"/>
+                        <text x="183" y="538" class="event-label label-canon" style="text-anchor:start">Pacto das Três Chamas</text>
+                    </g>
+
+                    <!-- D&D events -->
+                    <circle cx="65"  cy="130" r="6" class="event-dot m-dot-dnd" data-group="meg-dnd-0" data-system="D&amp;D 5e" data-label="Criaturas do Culto Sombrio atacam a região. Guilda contrata os aventureiros."/>
+                    <circle cx="65"  cy="200" r="6" class="event-dot m-dot-dnd" data-group="meg-dnd-1" data-system="D&amp;D 5e" data-label="Guiados pelos mapas dos Investigadores, aventureiros entram na Torre pelos esgotos."/>
+                    <circle cx="65"  cy="270" r="6" class="event-dot m-dot-dnd" data-group="meg-dnd-2" data-system="D&amp;D 5e" data-label="Invocação iniciada no subsolo. Aventureiros combatem enquanto o tempo se esgota."/>
+                    <circle cx="65"  cy="340" r="6" class="event-dot m-dot-dnd" data-group="meg-dnd-3" data-system="D&amp;D 5e" data-label="Entidade sombria banida. Núcleo do Culto destruído. A Torre silencia. ✦"/>
+
+                    <!-- CoC events -->
+                    <circle cx="160" cy="138" r="6" class="event-dot m-dot-coc" data-group="meg-coc-0" data-system="Call of Cthulhu" data-label="9 pessoas em 2 semanas. Investigadores chegam a Vermithrax rastreando o padrão."/>
+                    <circle cx="160" cy="208" r="6" class="event-dot m-dot-coc" data-group="meg-coc-1" data-system="Call of Cthulhu" data-label="Culto Sombrio localizado na Torre. Membros infiltrados na cidade identificados."/>
+                    <circle cx="160" cy="278" r="6" class="event-dot m-dot-coc" data-group="meg-coc-2" data-system="Call of Cthulhu" data-label="Data e hora do ritual obtidas. Intel repassada à Guilda e à Guarda imediatamente."/>
+                    <circle cx="160" cy="348" r="6" class="event-dot m-dot-coc" data-group="meg-coc-3" data-system="Call of Cthulhu" data-label="Com o Culto destruído, Investigadores entregam provas. Todos os membros presos. ✦"/>
+
+                    <!-- Pathfinder events -->
+                    <circle cx="255" cy="130" r="6" class="event-dot m-dot-pf" data-group="meg-pf-0" data-system="Pathfinder 2e" data-label="Capitã Irena mobiliza a Guarda de Vermithrax após surto de magia sombria."/>
+                    <circle cx="255" cy="200" r="6" class="event-dot m-dot-pf" data-group="meg-pf-1" data-system="Pathfinder 2e" data-label="Bairros ao redor da Torre evacuados. Perímetro estabelecido para o confronto."/>
+                    <circle cx="255" cy="270" r="6" class="event-dot m-dot-pf" data-group="meg-pf-2" data-system="Pathfinder 2e" data-label="Cultistas tentando escapar da Torre são interceptados. Nenhum foge."/>
+                    <circle cx="255" cy="340" r="6" class="event-dot m-dot-pf" data-group="meg-pf-3" data-system="Pathfinder 2e" data-label="Cidade protegida durante todo o confronto. Ordem mantida. Zero baixas civis. ✦"/>
+
+                    <!-- Canon events -->
+                    <circle cx="160" cy="500" r="8" class="event-dot m-dot-canon" data-group="meg-canon-0" data-system="Lore Oficial" data-label="Três mesas. Uma noite. Torre em ruínas. Culto Sombrio erradicado de Vermithrax."/>
+                    <circle cx="160" cy="534" r="8" class="event-dot m-dot-canon" data-group="meg-canon-1" data-system="Lore Oficial" data-label="Guilda, Investigadores e Guarda firmam o Pacto das Três Chamas. Aethoria nunca mais será a mesma."/>
+                    <circle cx="160" cy="500" r="8" class="canon-ring" id="m-ring-1"/>
+                    <circle cx="160" cy="534" r="8" class="canon-ring" id="m-ring-2"/>
+                </svg>
+            </div>
+
+            <p class="desktop-svg-hint">Passe o mouse nos eventos para ver como as histórias se cruzam</p>
+
+            <div class="viz-replay">
+                <button class="btn-replay" id="btn-replay">Repetir</button>
+            </div>
+
+            <p class="mobile-hint" id="mobile-hint">✦ Toque nos eventos para saber mais</p>
+            <div class="event-caption" id="event-caption">
+                <span class="ec-system" id="ec-system"></span>
+                <span class="ec-text" id="ec-text"></span>
+            </div>
+        </section>
+
+        <section id="conceito">
+            <h2>O Conceito</h2>
+            <div class="decorative-line"><span>✦</span></div>
+            <p class="section-subtitle">O que torna Aethoria diferente de qualquer coisa que você já jogou</p>
+
+            <div class="concept-grid">
+                <div class="concept-card fade-in">
+                    <div class="card-icon">I</div>
+                    <h3>Universo Vivo</h3>
+                    <p>
+                        Eventos de mesas reais mudam Aethoria permanentemente. Mesa A
+                        derrota o dragão. Mesa B investiga a carcaça. Mesa C negocia o
+                        território liberado. Mesma história, sem que ninguém precise se coordenar.
+                    </p>
+                </div>
+
+                <div class="concept-card fade-in">
+                    <div class="card-icon">II</div>
+                    <h3>Multi-Sistema</h3>
+                    <p>
+                        D&D 5e, Call of Cthulhu, Pathfinder e qualquer outro sistema convivem
+                        no mesmo universo. Cada personagem pertence ao seu sistema: criou para
+                        D&D, joga D&D. A narrativa é compartilhada; as mecânicas são locais.
+                    </p>
+                </div>
+
+                <div class="concept-card fade-in">
+                    <div class="card-icon">III</div>
+                    <h3>Curadoria Ativa</h3>
+                    <p>
+                        Uma equipe valida eventos antes de virarem história oficial. Sem caos,
+                        sem trollagem. Cada evento aprovado entra no cânone e fica lá
+                        para sempre. Qualidade narrativa é inegociável.
+                    </p>
+                </div>
+
+                <div class="concept-card fade-in">
+                    <div class="card-icon">IV</div>
+                    <h3>Tempo Unificado</h3>
+                    <p>
+                        Aethoria tem um calendário oficial. Todas as mesas jogam no "presente"
+                        do universo, sem paradoxos temporais. Eventos acontecem em sequência
+                        e qualquer mestre pode referenciar o que aconteceu antes.
+                    </p>
+                </div>
+
+                <div class="concept-card fade-in">
+                    <div class="card-icon">V</div>
+                    <h3>Personagens Persistentes</h3>
+                    <p>
+                        Seu personagem evolui através de múltiplas campanhas. Nível auditado
+                        por mestres. Conquistas registradas. Legado permanente na lore.
+                        Quando a campanha acaba, o personagem continua existindo.
+                    </p>
+                </div>
+
+                <div class="concept-card fade-in">
+                    <div class="card-icon">VI</div>
+                    <h3>Aethoria Crowns 👑</h3>
+                    <p>
+                        Moeda universal da guilda. Ganha jogando qualquer sistema. Gaste
+                        em benefícios narrativos: pistas exclusivas, ressurreição de personagem,
+                        títulos especiais ou um evento personalizado na lore oficial.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="for-whom" id="para-quem">
+            <h2>Para Quem É</h2>
+            <div class="decorative-line"><span>✦</span></div>
+            <p class="section-subtitle">Dois problemas reais. Uma plataforma.</p>
+
+            <div class="audience-grid">
+                <div class="audience-card fade-in">
+                    <div class="audience-role">Jogadores</div>
+                    <p class="audience-problem">
+                        "Invisto meses criando um personagem. A campanha acaba e ele vira
+                        memória. Não tem continuidade. E tenho personagens em vários sistemas
+                        sem nenhum lugar centralizado para acompanhar tudo."
+                    </p>
+                    <ul class="audience-benefits">
+                        <li>Personagem persiste e evolui através de múltiplas campanhas</li>
+                        <li>Suas ações têm peso real. Derrotou o vilão, ele morreu para todos</li>
+                        <li>Legado permanente se impactar a lore oficial</li>
+                        <li>Acumule Aethoria Crowns em qualquer sistema e mesa</li>
+                    </ul>
+                </div>
+
+                <div class="audience-card fade-in">
+                    <div class="audience-role">Comunidade</div>
+                    <p class="audience-problem">
+                        "A comunidade de RPG é fragmentada. Cada mesa é uma ilha isolada.
+                        É difícil sentir progressão narrativa global. E sistemas diferentes
+                        simplesmente não conversam entre si."
+                    </p>
+                    <ul class="audience-benefits">
+                        <li>Eventos que todos acompanham: "o dragão morreu, e agora?"</li>
+                        <li>Conversa entre mesas que nunca se viram pessoalmente</li>
+                        <li>Lore que cresce organicamente através de jogo real</li>
+                        <li>Ponte narrativa entre sistemas: D&D e CoC na mesma história</li>
+                    </ul>
+                </div>
+
+                <div class="audience-card fade-in">
+                    <div class="audience-role">Mestres</div>
+                    <p class="audience-problem">
+                        "Crio mundos complexos que só 4–6 pessoas conhecem. Quando a campanha
+                        acaba, meu mundo morre comigo. E aceitar personagens de outros mestres?
+                        Nunca sei se o nível é real ou inflado."
+                    </p>
+                    <ul class="audience-benefits">
+                        <li>Seu mundo entra na lore oficial e persiste além da sua mesa</li>
+                        <li>Outros mestres referenciam seus eventos em campanhas futuras</li>
+                        <li>Personagens com progressão auditada e histórico confiável</li>
+                        <li>Reconhecimento público pelas contribuições à lore</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+
+        <section class="how-it-works" id="como-funciona">
+            <h2>Como Funciona</h2>
+            <div class="decorative-line"><span>✦</span></div>
+            <p class="section-subtitle">Do primeiro personagem ao legado permanente na lore</p>
+
+            <div class="timeline">
+                <div class="timeline-item fade-in">
+                    <h3>1. Crie Seu Personagem</h3>
+                    <p>
+                        Escolha um sistema: D&D 5e, Call of Cthulhu, Pathfinder ou outro.
+                        Crie seu personagem narrativo: nome, descrição, história de origem.
+                        Esse vínculo com o sistema é permanente e garante consistência total.
+                    </p>
+                </div>
+
+                <div class="timeline-item fade-in">
+                    <h3>2. Encontre uma Missão</h3>
+                    <p>
+                        O quadro de missões filtra automaticamente pelo sistema do seu
+                        personagem. Leia o contexto narrativo, escolha sua aventura
+                        e solicite entrada. O mestre aprova o grupo e a jornada começa.
+                    </p>
+                </div>
+
+                <div class="timeline-item fade-in">
+                    <h3>3. Jogue Onde Preferir</h3>
+                    <p>
+                        O jogo acontece fora da plataforma. Discord, presencial, Roll20,
+                        onde sua mesa preferir. Aethoria documenta a história, não substitui
+                        suas ferramentas. Foco em narrativa, nunca em mecânicas.
+                    </p>
+                </div>
+
+                <div class="timeline-item fade-in">
+                    <h3>4. Evolua e Registre</h3>
+                    <p>
+                        Ao finalizar, o mestre registra o resultado: sobe níveis, concede
+                        itens especiais, propõe eventos à curadoria. Você ganha Aethoria
+                        Crowns e seu personagem cresce com histórico auditado e confiável.
+                    </p>
+                </div>
+
+                <div class="timeline-item fade-in">
+                    <h3>5. Legado Permanente</h3>
+                    <p>
+                        Eventos aprovados entram na lore oficial de Aethoria, para sempre.
+                        Outros mestres referenciam suas ações em campanhas futuras.
+                        Sua história continua existindo muito além da campanha.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta-section">
+            <h2>Build in Public</h2>
+            <div class="decorative-line"><span>✦</span></div>
+            <p>
+                Aethoria está sendo construído publicamente. Cada decisão, trade-off, erro
+                e pivô é documentado em tempo real. Se você quer acompanhar como um
+                produto nasce do zero, este é o lugar.
+            </p>
+            <div class="cta-group">
+                <a href="https://www.linkedin.com/in/joaopedrodeandrade/" class="btn btn-primary">Acompanhar no LinkedIn</a>
+                <a href="https://github.com/Jpdeandrade/aethoria" class="btn btn-secondary">Ver no GitHub</a>
+            </div>
+        </section>
+
+        <section class="signup-section" id="cadastro">
+            <h2>Entre na Lista</h2>
+            <div class="decorative-line"><span>✦</span></div>
+            <p class="section-subtitle">Seja o primeiro a jogar quando Aethoria abrir. Sem spam.</p>
+
+            <div class="signup-form-wrap">
+                <form id="signup-form" novalidate>
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label for="field-name">NOME</label>
+                            <input type="text" id="field-name" name="name" placeholder="Como te chamam na mesa?" autocomplete="name"/>
+                            <span class="field-error" id="err-name"></span>
+                        </div>
+                        <div class="form-field">
+                            <label for="field-email">E-MAIL</label>
+                            <input type="email" id="field-email" name="email" placeholder="seu@email.com" autocomplete="email"/>
+                            <span class="field-error" id="err-email"></span>
+                        </div>
+                        <div class="form-field">
+                            <label for="field-whatsapp">WHATSAPP <span style="opacity:.5;font-size:.85em">(opcional)</span></label>
+                            <input type="tel" id="field-whatsapp" name="whatsapp" placeholder="(11) 99999-9999" autocomplete="tel"/>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-submit">Quero Acompanhar</button>
+                </form>
+
+                <div class="signup-success" id="signup-success">
+                    <div class="success-mark">✦</div>
+                    <h3>Você está na lista.</h3>
+                    <p>Quando Aethoria abrir, você vai saber antes de todo mundo. Até lá, o universo continua sendo escrito.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>"Where Every Game Writes History"</p>
+            <div class="social-links">
+                <a href="https://github.com/Jpdeandrade/aethoria">GitHub</a>
+                <a href="https://www.linkedin.com/in/joaopedrodeandrade/">LinkedIn</a>
+                <a href="mailto:contato@aethoria.online">Contato</a>
+            </div>
+        </div>
+        <p class="copyright">© 2026 Aethoria. Build in Public Project by João Pedro.</p>
+    </footer>
+
+    <script>
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('visible');
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -80px 0px' });
+
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+        // ── Campaign Visualization ──────────────────────────────
+        (function () {
+            const svgH      = document.getElementById('universe-svg');
+            const svgV      = document.getElementById('universe-svg-v');
+            const vizWrap   = document.getElementById('campaign-viz');
+            const tooltip   = document.getElementById('viz-tooltip');
+            const ttSystem  = document.getElementById('tooltip-system');
+            const ttText    = document.getElementById('tooltip-text');
+            const btnReplay = document.getElementById('btn-replay');
+            if (!svgH && !svgV) return;
+
+            let animated = false;
+            let svg = svgH; // active SVG — reassigned in play()
+
+            const COLORS = { dnd: '#d4af37', coc: '#4a90e2', pf: '#9b6fa5', canon: '#f0d98f' };
+
+            // Desktop config
+            const DESKTOP = {
+                paths: ['path-dnd','path-coc','path-pf'],
+                sels:  ['.dot-dnd','.dot-coc','.dot-pf'],
+                canon: { path: 'path-canon', sel: '.dot-canon', filter: 'url(#glow-s)' },
+                convX: 718, convY: 150,
+                convNode: 'conv-node', convGlow: 'conv-glow',
+                axis: 'x'
+            };
+
+            // Mobile config (vertical lanes — trigger by Y coordinate)
+            const MOBILE = {
+                paths: ['m-path-dnd','m-path-coc','m-path-pf'],
+                sels:  ['.m-dot-dnd','.m-dot-coc','.m-dot-pf'],
+                canon: { path: 'm-path-canon', sel: '.m-dot-canon', filter: 'url(#m-glow-s)' },
+                convX: 160, convY: 472,
+                convNode: 'm-conv-node', convGlow: 'm-conv-glow',
+                axis: 'y'
+            };
+
+            function getConfig() {
+                return (svgV && window.getComputedStyle(svgV).display !== 'none') ? MOBILE : DESKTOP;
+            }
+
+            // Ease in-out quad
+            function ease(t) { return t < 0.5 ? 2*t*t : -1+(4-2*t)*t; }
+
+            // ── Reset both SVGs ────────────────────────────────────
+            function reset() {
+                ['path-dnd','path-coc','path-pf','path-canon',
+                 'm-path-dnd','m-path-coc','m-path-pf','m-path-canon'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (!el) return;
+                    el.style.transition = 'none';
+                    const len = el.getTotalLength();
+                    el.style.strokeDasharray  = len;
+                    el.style.strokeDashoffset = len;
+                });
+                document.querySelectorAll('.event-dot').forEach(d => d.classList.remove('visible'));
+                document.querySelectorAll('.event-group').forEach(g => g.classList.remove('visible'));
+                document.querySelectorAll('.canon-ring').forEach(d => d.classList.remove('visible'));
+                ['conv-node','m-conv-node'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.style.opacity = '0';
+                });
+                ['conv-glow','m-conv-glow'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.classList.remove('visible');
+                });
+                document.querySelectorAll('.viz-traveler').forEach(t => t.remove());
+            }
+
+            // ── Create travelling orb (uses active svg) ────────────
+            function mkOrb(color, filterId) {
+                const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                c.setAttribute('r', '6');
+                c.setAttribute('fill', color);
+                c.setAttribute('filter', filterId);
+                c.classList.add('viz-traveler');
+                svg.appendChild(c);
+                return c;
+            }
+
+            // ── Animate orb along path, trigger dots by axis coord ──
+            function travel(pathId, dotSel, color, duration, onDone, axis, filterId) {
+                const pathEl = document.getElementById(pathId);
+                if (!pathEl) { onDone && onDone(); return; }
+                const len  = pathEl.getTotalLength();
+                const orb  = mkOrb(color, filterId || 'url(#glow-s)');
+                const dots = Array.from(svg.querySelectorAll(dotSel));
+                const attr = axis === 'y' ? 'cy' : 'cx';
+
+                // Pre-compute progress fraction at which each dot's coordinate is first reached
+                const STEPS = 120;
+                const dotProgress = dots.map(d => {
+                    const tv = parseFloat(d.getAttribute(attr));
+                    for (let s = 0; s <= STEPS; s++) {
+                        if (pathEl.getPointAtLength(len * s / STEPS)[axis] >= tv)
+                            return s / STEPS;
+                    }
+                    return 0.99;
+                });
+
+                const t0 = performance.now();
+                function frame(now) {
+                    const t  = Math.min((now - t0) / duration, 1);
+                    const et = ease(t);
+                    const pt = pathEl.getPointAtLength(len * et);
+                    orb.setAttribute('cx', pt.x);
+                    orb.setAttribute('cy', pt.y);
+                    pathEl.style.strokeDashoffset = len * (1 - et);
+                    dots.forEach((d, i) => {
+                        if (!d.classList.contains('visible') && et >= dotProgress[i]) {
+                            d.classList.add('visible');
+                            const grp = d.dataset.group && document.getElementById(d.dataset.group);
+                            if (grp) grp.classList.add('visible');
+                        }
+                    });
+                    if (t < 1) { requestAnimationFrame(frame); return; }
+                    orb.style.transition = 'opacity 0.25s ease';
+                    orb.style.opacity    = '0';
+                    setTimeout(() => orb.remove(), 300);
+                    onDone && onDone();
+                }
+                requestAnimationFrame(frame);
+            }
+
+            // ── Convergence burst ──────────────────────────────────
+            function burst(cx, cy) {
+                const burstColors = [COLORS.dnd, COLORS.coc, COLORS.pf, '#ffffff'];
+                burstColors.forEach((col, i) => {
+                    const ring = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                    ring.setAttribute('cx', cx); ring.setAttribute('cy', cy); ring.setAttribute('r', '8');
+                    ring.setAttribute('fill', 'none'); ring.setAttribute('stroke', col);
+                    ring.setAttribute('stroke-width', i === 3 ? '1' : '2');
+                    ring.style.transformBox    = 'fill-box';
+                    ring.style.transformOrigin = 'center';
+                    ring.style.opacity = '0.9';
+                    svg.insertBefore(ring, svg.querySelector('.campaign-path'));
+                    const delay = i * 90;
+                    setTimeout(() => {
+                        ring.style.transition = `transform ${550+i*80}ms ease-out, opacity ${550+i*80}ms ease-out`;
+                        ring.style.transform  = 'scale(7)';
+                        ring.style.opacity    = '0';
+                        setTimeout(() => ring.remove(), 700 + i * 90);
+                    }, delay + 20);
+                });
+            }
+
+            // ── Main play ──────────────────────────────────────────
+            function play() {
+                if (animated) return;
+                animated = true;
+
+                const cfg = getConfig();
+                svg = (cfg === MOBILE) ? svgV : svgH;
+
+                let done = 0;
+                function onLaneDone() {
+                    done++;
+                    if (done < 3) return;
+                    burst(cfg.convX, cfg.convY);
+                    const cn = document.getElementById(cfg.convNode);
+                    const cg = document.getElementById(cfg.convGlow);
+                    if (cn) { cn.style.transition = 'opacity 0.4s ease'; cn.style.opacity = '1'; }
+                    if (cg) cg.classList.add('visible');
+                    setTimeout(() => {
+                        travel(cfg.canon.path, cfg.canon.sel, COLORS.canon, 2200, () => {
+                            svg.querySelectorAll('.canon-ring').forEach((r, i) =>
+                                setTimeout(() => r.classList.add('visible'), i * 420));
+                        }, cfg.axis, cfg.canon.filter);
+                    }, 380);
+                }
+
+                cfg.paths.forEach((p, i) =>
+                    travel(p, cfg.sels[i], COLORS[['dnd','coc','pf'][i]], 3500, onLaneDone, cfg.axis));
+            }
+
+            // ── Replay ────────────────────────────────────────────
+            if (btnReplay) btnReplay.addEventListener('click', () => {
+                animated = false; reset(); setTimeout(play, 80);
+            });
+
+            // ── Tooltips (both SVGs) ───────────────────────────────
+            document.querySelectorAll('.event-dot').forEach(dot => {
+                dot.addEventListener('mouseenter', function () {
+                    if (!this.classList.contains('visible') || !tooltip) return;
+                    ttSystem.textContent = this.dataset.system || '';
+                    ttText.textContent   = this.dataset.label  || '';
+                    tooltip.classList.add('visible');
+                });
+                dot.addEventListener('mousemove', function (e) {
+                    if (!vizWrap || !tooltip) return;
+                    const r = vizWrap.getBoundingClientRect();
+                    let x = e.clientX - r.left + 14, y = e.clientY - r.top - 14;
+                    if (x + 220 > r.width) x = e.clientX - r.left - 224;
+                    tooltip.style.left = x + 'px';
+                    tooltip.style.top  = y + 'px';
+                });
+                dot.addEventListener('mouseleave', () => tooltip && tooltip.classList.remove('visible'));
+            });
+
+            // ── Mobile tap → caption panel ────────────────────────
+            const mobileHint    = document.getElementById('mobile-hint');
+            const eventCaption  = document.getElementById('event-caption');
+            const ecSystem      = document.getElementById('ec-system');
+            const ecText        = document.getElementById('ec-text');
+
+            const sysColorClass = {
+                'D&D 5e': 'sys-dnd', 'Call of Cthulhu': 'sys-coc',
+                'Pathfinder 2e': 'sys-pf', 'Lore Oficial': 'sys-canon'
+            };
+
+            if (svgV && eventCaption) {
+                svgV.addEventListener('click', function (e) {
+                    const dot = e.target.closest('.event-dot');
+                    if (!dot || !dot.classList.contains('visible')) return;
+                    ecSystem.textContent = dot.dataset.system || '';
+                    ecSystem.className   = 'ec-system ' + (sysColorClass[dot.dataset.system] || '');
+                    ecText.textContent   = dot.dataset.label || '';
+                    eventCaption.classList.add('visible');
+                    if (mobileHint) mobileHint.classList.add('hidden');
+                });
+            }
+
+            // ── Scroll trigger (observe section) ──────────────────
+            new IntersectionObserver(entries => {
+                if (entries[0].isIntersecting) play();
+            }, { threshold: 0.25 }).observe(vizWrap || svgH);
+
+            reset();
+        })();
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
+
+        // ── Signup form ───────────────────────────────────────────
+        (function () {
+            const form    = document.getElementById('signup-form');
+            const success = document.getElementById('signup-success');
+            if (!form) return;
+
+            const nameEl  = document.getElementById('field-name');
+            const emailEl = document.getElementById('field-email');
+            const errName  = document.getElementById('err-name');
+            const errEmail = document.getElementById('err-email');
+
+            function setError(input, msg, errEl) {
+                input.classList.toggle('error', !!msg);
+                errEl.textContent = msg;
+            }
+
+            function validate() {
+                let ok = true;
+                if (!nameEl.value.trim()) {
+                    setError(nameEl, 'Informe seu nome.', errName); ok = false;
+                } else { setError(nameEl, '', errName); }
+
+                const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailEl.value.trim());
+                if (!emailEl.value.trim()) {
+                    setError(emailEl, 'Informe seu e-mail.', errEmail); ok = false;
+                } else if (!emailOk) {
+                    setError(emailEl, 'E-mail inválido.', errEmail); ok = false;
+                } else { setError(emailEl, '', errEmail); }
+
+                return ok;
+            }
+
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                if (!validate()) return;
+
+                const btn = form.querySelector('button[type="submit"]');
+                btn.disabled = true;
+                btn.textContent = 'Enviando...';
+
+                fetch('https://webhook.infrajp.xyz/webhook/cba6d127-f8b1-44c3-89a8-b42b8340d91d', {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams({
+                        name:     nameEl.value.trim(),
+                        email:    emailEl.value.trim(),
+                        whatsapp: document.getElementById('field-whatsapp').value.trim()
+                    })
+                })
+                .finally(() => {
+                    form.style.transition = 'opacity 0.3s ease';
+                    form.style.opacity = '0';
+                    setTimeout(() => {
+                        form.style.display = 'none';
+                        success.classList.add('visible');
+                    }, 300);
+                });
+            });
+        })();
+    </script>
+</body>
+</html>
