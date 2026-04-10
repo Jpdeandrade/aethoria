@@ -212,9 +212,33 @@ fetch('https://webhook.infrajp.xyz/webhook/...', {
 
 ---
 
+## Fase 6 — Arquitetura Narrativa (Abr 2026)
+
+### Decisão: Lore gerenciada como repositório Git
+
+**Problema:** Com múltiplas mesas rodando simultaneamente no mesmo universo, como garantir que eventos não se contradizem? Como rastrear quem propôs o quê? Como manter histórico sem virar planilha?
+
+**Insight:** Durante estudos para certificação GitHub, a estrutura de Git (commits, branches, merges, pull requests) mapeou exatamente o problema de consistência narrativa do Aethoria.
+
+**Modelo adotado:**
+
+| Conceito Git | Equivalente Aethoria |
+|---|---|
+| `main` branch | Lore canônica oficial |
+| Feature branch | Missão ativa |
+| Commit | Evento registrado |
+| Pull Request | Evento pendente (aguarda staff) |
+| Code review | Curadoria |
+| Merge | Canonização (evento entra na lore) |
+
+**Detalhe de design:** A nomenclatura Git é estritamente interna. Usuários veem "missão", "evento", "publicar na lore" — nunca "branch" ou "commit". A complexidade fica escondida; a experiência fica simples.
+
+**Alternativa descartada:** Hierarquia de eventos com travamento global — gerava complexidade de rastreamento sem resolver conflitos entre mesas na mesma região.
+
+---
+
 ## Próximos Passos
 
-- [ ] PRD Técnico completo
 - [ ] Iniciar desenvolvimento do MVP (Next.js + Supabase)
 - [ ] Autenticação e perfil de jogador
 - [ ] Quadro de missões
